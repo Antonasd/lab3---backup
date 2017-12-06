@@ -35,6 +35,16 @@ public class GameState extends BaseAppState {
     @Override
     protected void onEnable(){
         Main.model.startTimer();
+        for(Disk d : Disk.disks){
+            if(d.getClass() == PositiveDisk.class){
+                PositiveDisk pd = (PositiveDisk) d;
+                pd.setWorth(5);
+            } else if (d.getClass() == PlayerDisk.class) {
+                PlayerDisk pd = (PlayerDisk) d;
+                pd.score = 0;
+                pd.setVelocity(0, 0);
+            }
+        }
         Main.refInputManager.addMapping("p1Up", new KeyTrigger(KeyInput.KEY_T));
         Main.refInputManager.addMapping("p1Down", new KeyTrigger(KeyInput.KEY_G));
         Main.refInputManager.addMapping("p1Left", new KeyTrigger(KeyInput.KEY_F));

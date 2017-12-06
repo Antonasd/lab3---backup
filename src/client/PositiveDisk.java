@@ -57,7 +57,11 @@ public class PositiveDisk extends Disk{
             worth--;
             text.setText("" + worth);
         }
-        
+    }
+    
+    public void setWorth(int worth) {
+        this.worth = worth;
+        text.setText("" + worth);
     }
     
     public void randomizeVelocity() {

@@ -8,6 +8,11 @@ package client;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
+import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Vector2f;
 import com.jme3.network.Message;
 import java.util.ArrayList;
@@ -20,17 +25,21 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class EndState extends BaseAppState {
 
-    static ConcurrentLinkedQueue<Message> messageQueue = new ConcurrentLinkedQueue<Message>();
+    private static ConcurrentLinkedQueue<Message> messageQueue = new ConcurrentLinkedQueue<Message>();
+    BitmapFont font;
+    BitmapText text;
+    @Override
+    public void update(float tpf){
+        if(!messageQueue.isEmpty())handleMessage(messageQueue.remove());
+    }
     
     @Override
-    public void update(float tpf) {
-        while(!messageQueue.isEmpty()){
-            handleMessage(messageQueue.remove());
-        }
-    }
-    @Override
-    protected void initialize(Application app) {
-        
+    protected void initialize(Application game) {
+        resetGame();
+        //font = Main.refAssetManager.loadFont("Interface/Fonts/Console.fnt");
+        //text = new BitmapText(font);
+        //text.setText("Press 'R' to ready-up");
+        //set pos
     }
 
     @Override
@@ -39,12 +48,16 @@ public class EndState extends BaseAppState {
 
     @Override
     protected void onEnable() {
-        
+        Main.refInputManager.addMapping("Ready", new KeyTrigger(KeyInput.KEY_R));
+        Main.refInputManager.addListener(actionListener, "Ready");
+        //Main.refGuiNode.attachChild(text);
     }
 
     @Override
     protected void onDisable() {
-        resetGame();
+        Main.refInputManager.removeListener(actionListener);
+        Main.refInputManager.deleteMapping("Ready");
+        //Main.refGuiNode.detachChild(text);
     }
     
     private void handleMessage(Message message){
@@ -89,17 +102,22 @@ public class EndState extends BaseAppState {
                 Vector2f newPos = positivePos.remove(positivePos.size() - 1);
                 pd.reset();
                 pd.setPosition(newPos);
-                pd.randomizeVelocity();
                 
             }
             if(d.getClass() == NegativeDisk.class) {
                 NegativeDisk nd = (NegativeDisk) d;
                 Vector2f newPos = negativePos.remove(negativePos.size() - 1);
                 nd.setPosition(newPos);
-                nd.randomizeVelocity();
                 
             }            
         }
     }
+    
+    private final ActionListener actionListener = new ActionListener() {
+        @Override
+        public void onAction(String name, boolean isPressed, float tpf){
+            Input.addMessage(new ActionInputContainer(tpf, name, isPressed));
+        }
+    }; 
     
 }
