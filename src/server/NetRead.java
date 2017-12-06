@@ -14,6 +14,8 @@ import com.jme3.network.Server;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import networking.Packet.ClientReady;
 import networking.Packet.InputPressed;
 import networking.Packet.InputReleased;
@@ -81,6 +83,12 @@ public class NetRead implements Runnable, MessageListener<HostedConnection>, Con
                     
                 }
                 
+            } else {
+                try {
+                    Thread.sleep((long) 10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(NetRead.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }

@@ -8,6 +8,8 @@ package server;
 import com.jme3.network.Filter;
 import com.jme3.network.Filters;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import networking.Packet.ChangeState;
 import networking.Packet.ClientReady;
 import networking.Packet.DisconnectClient;
@@ -106,7 +108,12 @@ public class NetWrite implements Runnable {
                 } else {
                     server.server.broadcast(pair.filter, pair.message);
                 }
-                
+            }else {
+                try {
+                    Thread.sleep((long) 10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(NetWrite.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }

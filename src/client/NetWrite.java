@@ -8,6 +8,8 @@ package client;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -41,6 +43,12 @@ public class NetWrite implements Runnable {
             if(!messageQueue.isEmpty()){
                 Message message = messageQueue.remove();
                 myClient.send(message);
+            } else {
+                try {
+                    Thread.sleep((long) 10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(NetWrite.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }

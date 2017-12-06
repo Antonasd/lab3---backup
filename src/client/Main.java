@@ -87,6 +87,7 @@ public class Main extends SimpleApplication {
         Serializer.registerClass(InputReleased.class);
         Serializer.registerClass(JoiningClient.class);
         Serializer.registerClass(UpdatePosDisk.class);
+        
         //Set references
         refAssetManager = assetManager;
         refInputManager = inputManager;
