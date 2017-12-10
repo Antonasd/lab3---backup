@@ -13,6 +13,7 @@ import networking.Packet.ChangeState;
 import networking.Packet.DiskUpdate;
 import networking.Packet.InitClient;
 import networking.Packet.JoiningClient;
+import networking.Packet.RoundWinner;
 import networking.Packet.ScoreUpdate;
 import networking.Packet.TimeDiff;
 import networking.Packet.TimeSync;
@@ -99,6 +100,9 @@ public class NetRead implements Runnable, MessageListener<Client> {
         
         } else if (message instanceof UpdatePosDisk) {
             Modeling.addMessage(message);
+            
+        } else if (message instanceof RoundWinner) {
+            EndState.addMessage(message);
         }
         
         

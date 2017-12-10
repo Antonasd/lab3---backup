@@ -58,14 +58,15 @@ public class GameState extends BaseAppState {
         Main.refInputManager.addMapping("Debug", new KeyTrigger(KeyInput.KEY_M));
         
         Main.refInputManager.addListener(actionListener, "p1Up", "p1Down", "p1Left", "p1Right",
-                                                         "p2UP", "p2Down", "p2Left", "p2Right", "Debug");
+                                                         "p2Up", "p2Down", "p2Left", "p2Right", "Debug");
         Main.refInputManager.addListener(analogListener, "p1Up", "p1Down", "p1Left", "p1Right",
-                                                         "p2UP", "p2Down", "p2Left", "p2Right");   
+                                                         "p2Up", "p2Down", "p2Left", "p2Right");   
     }
 
     @Override
     protected void onDisable() {
         Main.refInputManager.clearMappings();
+        Main.model.timer.setText("Time : 30.0");
     }
     
     private final ActionListener actionListener = new ActionListener() {

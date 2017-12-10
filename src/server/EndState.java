@@ -9,7 +9,10 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector2f;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
+import networking.Packet.RoundWinner;
 
 /**
  *
@@ -51,7 +54,9 @@ public class EndState extends BaseAppState {
 
     @Override
     protected void onEnable() {
-        
+        Collections.sort(PlayerDisk.playerDisks, scoreComparator);
+        PlayerDisk winner = PlayerDisk.playerDisks.get(PlayerDisk.playerDisks.size()-1);
+        NetWrite.addMessage(new RoundWinner(winner.diskID));
     }
 
     @Override
@@ -124,4 +129,10 @@ public class EndState extends BaseAppState {
         }
     }
     
+    private final Comparator scoreComparator = new Comparator<PlayerDisk>(){
+      @Override
+      public int compare(PlayerDisk player1, PlayerDisk player2){
+          return player1.score-player2.score;
+        }  
+    };
 }

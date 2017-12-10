@@ -7,6 +7,7 @@ package server;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
+import networking.Packet.TimeSync;
 
 /**
  *
@@ -15,15 +16,18 @@ import com.jme3.app.state.BaseAppState;
 public class GameState extends BaseAppState {
 
     float roundTime = 0;
+    final float updateTimeIntervall = 0.1f;
+    float timeSinceUpdate = 0f;
     
     @Override
     public void update(float tpf) {
         for(Disk d : Disk.disks){
             d.tick(tpf);
         }
-        
-        roundTime += tpf;
-        if(roundTime > 30){
+        timeSinceUpdate +=tpf;
+        roundTime = roundTime + tpf > 30f ? 30f : roundTime + tpf;
+        if(timeSinceUpdate >= updateTimeIntervall || roundTime == 30f)NetWrite.addMessage(new TimeSync(roundTime));
+        if(roundTime == 30f){
             Modeling.stateManager.getState(EndState.class).setEnabled(true);
             Modeling.stateManager.getState(GameState.class).setEnabled(false);
         }
@@ -42,7 +46,6 @@ public class GameState extends BaseAppState {
     @Override
     protected void onEnable() {
         roundTime = 0;
-        System.out.println("Enabled");
         for(Disk d : Disk.disks){
             if(d.getClass() == PositiveDisk.class) {
                 PositiveDisk pd = (PositiveDisk) d;
@@ -70,6 +73,7 @@ public class GameState extends BaseAppState {
     @Override
     protected void onDisable() {
         roundTime = 0;
+        timeSinceUpdate = 0f;
         NetWrite.changeState((byte) 2);
     }
     

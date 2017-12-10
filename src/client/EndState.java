@@ -7,7 +7,6 @@ package client;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
-import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
@@ -18,6 +17,7 @@ import com.jme3.network.Message;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import networking.Packet.RoundWinner;
 
 /**
  *
@@ -27,7 +27,8 @@ public class EndState extends BaseAppState {
 
     private static ConcurrentLinkedQueue<Message> messageQueue = new ConcurrentLinkedQueue<Message>();
     BitmapFont font;
-    BitmapText text;
+    BitmapText readyText;
+    BitmapText winnerText;
     @Override
     public void update(float tpf){
         if(!messageQueue.isEmpty())handleMessage(messageQueue.remove());
@@ -36,10 +37,13 @@ public class EndState extends BaseAppState {
     @Override
     protected void initialize(Application game) {
         resetGame();
-        //font = Main.refAssetManager.loadFont("Interface/Fonts/Console.fnt");
-        //text = new BitmapText(font);
-        //text.setText("Press 'R' to ready-up");
+        font = Main.refAssetManager.loadFont("Interface/Fonts/Console.fnt");
+        readyText = new BitmapText(font);
+        winnerText = new BitmapText(font);
+        readyText.setText("Press 'R' to ready-up");
         //set pos
+        readyText.setLocalTranslation(5f, 300f, 0);
+        winnerText.setLocalTranslation(5f, 240f, 0);
     }
 
     @Override
@@ -48,21 +52,27 @@ public class EndState extends BaseAppState {
 
     @Override
     protected void onEnable() {
-        Main.refInputManager.addMapping("Ready", new KeyTrigger(KeyInput.KEY_R));
-        Main.refInputManager.addListener(actionListener, "Ready");
-        //Main.refGuiNode.attachChild(text);
+        
     }
 
     @Override
     protected void onDisable() {
         Main.refInputManager.removeListener(actionListener);
         Main.refInputManager.deleteMapping("Ready");
-        //Main.refGuiNode.detachChild(text);
+        Main.refGuiNode.detachChild(readyText);
+        Main.refGuiNode.detachChild(winnerText);
     }
-    
+    public static void addMessage(Message message){
+        messageQueue.add(message);
+    }
     private void handleMessage(Message message){
-        if(true){
-            
+        if(message instanceof RoundWinner){
+            RoundWinner packet = (RoundWinner)message;
+            winnerText.setText("Player "+(packet.getPlayerID()-16)+" has won!");
+            Main.refInputManager.addMapping("Ready", new KeyTrigger(KeyInput.KEY_R));
+            Main.refInputManager.addListener(actionListener, "Ready");
+            Main.refGuiNode.attachChild(readyText);
+            Main.refGuiNode.attachChild(winnerText);
         }
         
         else{

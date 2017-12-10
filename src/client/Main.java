@@ -87,6 +87,7 @@ public class Main extends SimpleApplication {
         Serializer.registerClass(InputReleased.class);
         Serializer.registerClass(JoiningClient.class);
         Serializer.registerClass(UpdatePosDisk.class);
+        Serializer.registerClass(RoundWinner.class);
         
         //Set references
         refAssetManager = assetManager;
@@ -108,6 +109,10 @@ public class Main extends SimpleApplication {
         //Cam setup
         cam.setLocation(new Vector3f(-84f, 0.0f, 720f));
         cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+        //
+        getFlyByCamera().setEnabled(false);
+        setDisplayFps(false);
+        setDisplayStatView(false);
         //Create frame
         new Frame(assetManager);
         //Start client
@@ -131,7 +136,6 @@ public class Main extends SimpleApplication {
             System.out.println("ERROR CONNECTING");
             System.out.println(e.getMessage());
         }
-        System.out.println("hey");
         
     }
 

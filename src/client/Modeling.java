@@ -29,6 +29,7 @@ public class Modeling{
     
     boolean running = true;
     boolean scoreUpdate;
+    private boolean timeDiffMeasured;
     
     float gameTimeElapsed = 0f;
     static float serverTimeDiff = 0f;
@@ -54,10 +55,14 @@ public class Modeling{
         Main.refGuiNode.attachChild(timer);
         
         //set pos
+        first.setLocalTranslation(5f, 400f, 0f);
+        second.setLocalTranslation(5f, 370f, 0f);
+        third.setLocalTranslation(5f, 340f, 0f);
+        timer.setLocalTranslation(5f, 450f, 0f);
     }
     
     public void update(float tpf){
-        if(!messageQueue.isEmpty()){
+        while(!messageQueue.isEmpty()){
             handleMessage(messageQueue.remove());
         }            
         for(Disk d : Disk.disks){
@@ -66,17 +71,17 @@ public class Modeling{
         if(scoreUpdate){
             List<PlayerDisk> sortedPlayers = new ArrayList<>(PlayerDisk.playerMap.values());
             Collections.sort(sortedPlayers, scoreComparator);
+            int amountOfPlayers = sortedPlayers.size();
             
-            first.setText("1st: Player "+sortedPlayers.get(0)+" Score: "+sortedPlayers.get(0).score);
-            if(sortedPlayers.size()>1)second.setText("2nd: Player "+sortedPlayers.get(1)+" Score: "+sortedPlayers.get(1).score);
+            first.setText("1st: Player "+(sortedPlayers.get(amountOfPlayers-1).diskID-16)+" Score: "+sortedPlayers.get(amountOfPlayers-1).score);
+            if(amountOfPlayers>1)second.setText("2nd: Player "+(sortedPlayers.get(amountOfPlayers-2).diskID-16)+" Score: "+sortedPlayers.get(amountOfPlayers-2).score);
             else second.setText("");
-            if(sortedPlayers.size()>2)third.setText("3rd: Player "+sortedPlayers.get(2)+" Score: "+sortedPlayers.get(2).score);
-            else second.setText("");
+            if(amountOfPlayers>2)third.setText("3rd: Player "+(sortedPlayers.get(amountOfPlayers-3).diskID-16)+" Score: "+sortedPlayers.get(amountOfPlayers-3).score);
+            else third.setText("");
             
             scoreUpdate = false;
         }
-        gameTimeElapsed += tpf;
-        timer.setText("Time : "+gameTimeElapsed);
+        //gameTimeElapsed+=tpf;
     }        
     
     public void handleMessage(Message message){
@@ -94,8 +99,16 @@ public class Modeling{
             
         } else if(message instanceof TimeSync) {
             TimeSync packet = (TimeSync) message;
-            this.gameTimeElapsed = packet.getTime();
-            NetWrite.addMessage(new TimeSync(packet.getTime()));
+            System.out.println("gameTime : "+packet.getTime());
+            System.out.println("gameTimeElapsed : "+gameTimeElapsed);
+            System.out.println("serverTimeDiff : "+serverTimeDiff);
+            if(packet.getTime()+serverTimeDiff<30f)this.gameTimeElapsed = packet.getTime()+serverTimeDiff;
+            else this.gameTimeElapsed = packet.getTime();
+            timer.setText("Time : "+gameTimeElapsed);
+            if(timeDiffMeasured){
+                NetWrite.addMessage(new TimeSync(packet.getTime()));
+                timeDiffMeasured = true;
+            }
                         
         } else if(message instanceof DisconnectClient){
             DisconnectClient packet = (DisconnectClient)message;
@@ -112,7 +125,8 @@ public class Modeling{
     }
     
     public void startTimer(){
-        gameTimeElapsed = serverTimeDiff;   
+        gameTimeElapsed = serverTimeDiff;
+        
     }
     
 
@@ -120,11 +134,12 @@ public class Modeling{
         messageQueue.add(message);
     }
     
+    
     private final Comparator scoreComparator = new Comparator<PlayerDisk>(){
       @Override
       public int compare(PlayerDisk player1, PlayerDisk player2){
           return player1.score-player2.score;
-        }  
+      }  
     };
     
 }

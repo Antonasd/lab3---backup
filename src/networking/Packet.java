@@ -272,6 +272,22 @@ public class Packet {
             return this.diskID;
         }
     }
+    @Serializable
+    public static class RoundWinner extends MyAbstractMessage{
+        int playerID;
+        
+        public RoundWinner(){    
+            
+        }
+        
+        public RoundWinner(int playerID){
+            this.playerID = playerID;
+        }
+        
+        public int getPlayerID(){
+            return playerID;
+        }
+    }
 }
 
 
