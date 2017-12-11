@@ -160,6 +160,7 @@ public class NetRead implements Runnable, MessageListener<HostedConnection>, Con
 
             int random = rand.nextInt(PlayerDisk.busyPos.length);
             while(PlayerDisk.busyPos[random]){
+                System.out.println("fucking stuck");
                 random = rand.nextInt(PlayerDisk.busyPos.length);
 
             }

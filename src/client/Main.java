@@ -21,7 +21,7 @@ import networking.Packet.*;
 public class Main extends SimpleApplication {
     //constants
     public static final String NAME = "MultiDisk";
-    public static final String DEFAULT_SERVER = "localhost";
+    public static final String DEFAULT_SERVER = "130.240.55.63";
     public static final int PORT = 2000;
     public static final int VERSION = 1;
     

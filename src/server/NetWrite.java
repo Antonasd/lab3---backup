@@ -52,6 +52,7 @@ public class NetWrite implements Runnable {
     
     public static void initClient(int diskID, int startPos, Filter filter) {
         messageQueue.add(new MessageFilterPair(new InitClient(diskID, startPos), filter));
+        System.out.println("Writing initClient");
     }
     
     public static void joiningClient(int diskID, int startPos, Filter filter) {
@@ -105,8 +106,14 @@ public class NetWrite implements Runnable {
                 MessageFilterPair pair = messageQueue.remove();
                 if (pair.filter == null) {
                     server.server.broadcast(pair.message);
+                    if(pair.message.getClass() == InitClient.class){
+                        System.out.println("yolo");
+                    }
                 } else {
                     server.server.broadcast(pair.filter, pair.message);
+                    if(pair.message.getClass() == InitClient.class){
+                        System.out.println("yolo");
+                    }
                 }
             }else {
                 try {
