@@ -36,6 +36,7 @@ public class PlayerDisk extends Disk{
     public PlayerDisk(HostedConnection conn) {
         super(Main.PLAYER_R);
         this.conn = conn;
+        playerAmount++;
         score = 0;
         if(playerPos.isEmpty()) {
             PlayerDisk.resetPosArray();

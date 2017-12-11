@@ -166,12 +166,6 @@ public class NetRead implements Runnable, MessageListener<HostedConnection>, Con
             player.setPosition(PlayerDisk.playerPos.get(random));
             NetWrite.initClient(player.diskID, random, Filters.in(conn));
 
-            random = rand.nextInt(PlayerDisk.busyPos.length);
-            while(PlayerDisk.busyPos[random]){
-                random = rand.nextInt(PlayerDisk.busyPos.length);
-
-            }
-            PlayerDisk.busyPos[random] = true;
             
             //inform other clients
             NetWrite.joiningClient(player.diskID, PlayerDisk.playerPos.indexOf(player.pos), Filters.notIn(conn));
