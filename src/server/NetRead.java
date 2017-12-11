@@ -150,7 +150,8 @@ public class NetRead implements Runnable, MessageListener<HostedConnection>, Con
                     NetWrite.joiningClient(player.diskID, PlayerDisk.playerPos.indexOf(player.pos), Filters.in(player1.conn, player2.conn));
                 }
             }
-        } else if(PlayerDisk.playerAmount + 1 == 9){
+        } else if(PlayerDisk.playerAmount + 1 < 10){
+            System.out.println("am here");
             PlayerDisk player = new PlayerDisk(conn);
 
             NetWrite.syncTime(Filters.in(conn));
