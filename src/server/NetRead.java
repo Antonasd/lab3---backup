@@ -111,41 +111,75 @@ public class NetRead implements Runnable, MessageListener<HostedConnection>, Con
 
     @Override
     public void connectionAdded(Server server, HostedConnection conn) {
-        PlayerDisk player1 = new PlayerDisk(conn);
-        PlayerDisk player2 = new PlayerDisk(conn);
-        
-        NetWrite.syncTime(Filters.in(conn));
-        
-        Random rand = new Random();
-        
-        int random = rand.nextInt(PlayerDisk.busyPos.length);
-        while(PlayerDisk.busyPos[random]){
+        if(PlayerDisk.playerAmount + 2 < 10){
+
+            PlayerDisk player1 = new PlayerDisk(conn);
+            PlayerDisk player2 = new PlayerDisk(conn);
+
+            NetWrite.syncTime(Filters.in(conn));
+
+            Random rand = new Random();
+
+            int random = rand.nextInt(PlayerDisk.busyPos.length);
+            while(PlayerDisk.busyPos[random]){
+                random = rand.nextInt(PlayerDisk.busyPos.length);
+
+            }
+            PlayerDisk.busyPos[random] = true;
+            player1.setPosition(PlayerDisk.playerPos.get(random));
+            NetWrite.initClient(player1.diskID, random, Filters.in(conn));
+
             random = rand.nextInt(PlayerDisk.busyPos.length);
-            
-        }
-        PlayerDisk.busyPos[random] = true;
-        player1.setPosition(PlayerDisk.playerPos.get(random));
-        NetWrite.initClient(player1.diskID, random, Filters.in(conn));
-        
-        random = rand.nextInt(PlayerDisk.busyPos.length);
-        while(PlayerDisk.busyPos[random]){
+            while(PlayerDisk.busyPos[random]){
+                random = rand.nextInt(PlayerDisk.busyPos.length);
+
+            }
+            PlayerDisk.busyPos[random] = true;
+            player2.setPosition(PlayerDisk.playerPos.get(random));
+            NetWrite.initClient(player2.diskID, random, Filters.in(conn));
+
+            player1.startingPos = player1.pos;
+            player2.startingPos = player2.pos;
+
+            //inform other clients
+            NetWrite.joiningClient(player1.diskID, PlayerDisk.playerPos.indexOf(player1.pos), Filters.notIn(conn));
+            NetWrite.joiningClient(player2.diskID, PlayerDisk.playerPos.indexOf(player2.pos), Filters.notIn(conn));
+            //inform connector of other clients
+            for(PlayerDisk player : PlayerDisk.playerDisks) {
+                if(player != player1 && player != player2) {
+                    NetWrite.joiningClient(player.diskID, PlayerDisk.playerPos.indexOf(player.pos), Filters.in(player1.conn, player2.conn));
+                }
+            }
+        } else {
+            PlayerDisk player = new PlayerDisk(conn);
+
+            NetWrite.syncTime(Filters.in(conn));
+
+            Random rand = new Random();
+
+            int random = rand.nextInt(PlayerDisk.busyPos.length);
+            while(PlayerDisk.busyPos[random]){
+                random = rand.nextInt(PlayerDisk.busyPos.length);
+
+            }
+            PlayerDisk.busyPos[random] = true;
+            player.setPosition(PlayerDisk.playerPos.get(random));
+            NetWrite.initClient(player.diskID, random, Filters.in(conn));
+
             random = rand.nextInt(PlayerDisk.busyPos.length);
+            while(PlayerDisk.busyPos[random]){
+                random = rand.nextInt(PlayerDisk.busyPos.length);
+
+            }
+            PlayerDisk.busyPos[random] = true;
             
-        }
-        PlayerDisk.busyPos[random] = true;
-        player2.setPosition(PlayerDisk.playerPos.get(random));
-        NetWrite.initClient(player2.diskID, random, Filters.in(conn));
-        
-        player1.startingPos = player1.pos;
-        player2.startingPos = player2.pos;
-        
-        //inform other clients
-        NetWrite.joiningClient(player1.diskID, PlayerDisk.playerPos.indexOf(player1.pos), Filters.notIn(conn));
-        NetWrite.joiningClient(player2.diskID, PlayerDisk.playerPos.indexOf(player2.pos), Filters.notIn(conn));
-        //inform connector of other clients
-        for(PlayerDisk player : PlayerDisk.playerDisks) {
-            if(player != player1 && player != player2) {
-                NetWrite.joiningClient(player.diskID, PlayerDisk.playerPos.indexOf(player.pos), Filters.in(player1.conn, player2.conn));
+            //inform other clients
+            NetWrite.joiningClient(player.diskID, PlayerDisk.playerPos.indexOf(player.pos), Filters.notIn(conn));
+            //inform connector of other clients
+            for(PlayerDisk p : PlayerDisk.playerDisks) {
+                if(p != player) {
+                    NetWrite.joiningClient(p.diskID, PlayerDisk.playerPos.indexOf(p.pos), Filters.in(player.conn));
+                }
             }
         }
         
