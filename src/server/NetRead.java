@@ -150,7 +150,7 @@ public class NetRead implements Runnable, MessageListener<HostedConnection>, Con
                     NetWrite.joiningClient(player.diskID, PlayerDisk.playerPos.indexOf(player.pos), Filters.in(player1.conn, player2.conn));
                 }
             }
-        } else {
+        } else if(PlayerDisk.playerAmount + 1 == 9){
             PlayerDisk player = new PlayerDisk(conn);
 
             NetWrite.syncTime(Filters.in(conn));
@@ -181,6 +181,8 @@ public class NetRead implements Runnable, MessageListener<HostedConnection>, Con
                     NetWrite.joiningClient(p.diskID, PlayerDisk.playerPos.indexOf(p.pos), Filters.in(player.conn));
                 }
             }
+        } else {
+            conn.close("Game is full");
         }
         
         
