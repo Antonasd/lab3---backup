@@ -42,7 +42,7 @@ public class PlayerDisk extends Disk{
             PlayerDisk.playerPos.add(new Vector2f(Main.PLAYER_COORD, 0));
             PlayerDisk.playerPos.add(new Vector2f(-Main.PLAYER_COORD, -Main.PLAYER_COORD));
             PlayerDisk.playerPos.add(new Vector2f(0, -Main.PLAYER_COORD));
-            PlayerDisk.playerPos.add(new Vector2f(Main.PLAYER_COORD, Main.PLAYER_COORD));
+            PlayerDisk.playerPos.add(new Vector2f(Main.PLAYER_COORD, -Main.PLAYER_COORD));
         }
         
         score = 0;
