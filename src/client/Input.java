@@ -77,9 +77,13 @@ public class Input implements Runnable {
                     break;
                 //Ready
                 case "Ready":
-                    if(input.isPressed && localPlayers[0] != null && localPlayers[1] != null){
-                        NetWrite.addMessage(new ClientReady(localPlayers[0].diskID));
-                        NetWrite.addMessage(new ClientReady(localPlayers[1].diskID));
+                    if(input.isPressed){
+                        if(localPlayers[0] != null){
+                            NetWrite.addMessage(new ClientReady(localPlayers[0].diskID));
+                        }
+                        if(localPlayers[1] != null){
+                            NetWrite.addMessage(new ClientReady(localPlayers[1].diskID));
+                        }
                     }
                     break;
                 case "Debug":
@@ -93,22 +97,22 @@ public class Input implements Runnable {
             AnalogInputContainer input = (AnalogInputContainer) inputContainer;
             switch(input.name){
                 //p1
-                case "p1Up": localPlayers[0].moveNorth(input.tpf);
+                case "p1Up": if(localPlayers[0] != null)localPlayers[0].moveNorth(input.tpf);
                     break;
-                case "p1Down": localPlayers[0].moveSouth(input.tpf);
+                case "p1Down": if(localPlayers[0] != null)localPlayers[0].moveSouth(input.tpf);
                     break;
-                case "p1Left": localPlayers[0].moveWest(input.tpf);
+                case "p1Left": if(localPlayers[0] != null)localPlayers[0].moveWest(input.tpf);
                     break;
-                case "p1Right": localPlayers[0].moveEast(input.tpf);
+                case "p1Right": if(localPlayers[0] != null)localPlayers[0].moveEast(input.tpf);
                     break;
                 //p2    
-                case "p2Up": localPlayers[1].moveNorth(input.tpf);
+                case "p2Up": if(localPlayers[1] != null) localPlayers[1].moveNorth(input.tpf);
                     break;
-                case "p2Down": localPlayers[1].moveSouth(input.tpf);
+                case "p2Down": if(localPlayers[1] != null) localPlayers[1].moveSouth(input.tpf);
                     break;
-                case "p2Left": localPlayers[1].moveWest(input.tpf);
+                case "p2Left": if(localPlayers[1] != null) localPlayers[1].moveWest(input.tpf);
                     break;
-                case "p2Right": localPlayers[1].moveEast(input.tpf);
+                case "p2Right": if(localPlayers[1] != null) localPlayers[1].moveEast(input.tpf);
                     break;
             }
         }
