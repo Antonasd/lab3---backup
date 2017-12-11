@@ -62,7 +62,7 @@ public class Modeling{
     }
     
     public void update(float tpf){
-        while(!messageQueue.isEmpty()){
+        if(!messageQueue.isEmpty()){
             handleMessage(messageQueue.remove());
         }            
         for(Disk d : Disk.disks){
